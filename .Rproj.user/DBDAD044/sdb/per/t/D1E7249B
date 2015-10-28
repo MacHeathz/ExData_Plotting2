@@ -1,0 +1,18 @@
+{
+    "contents" : "# Compare emissions from motor vehicle sources in Baltimore City with emissions\n# from motor vehicle sources in Los Angeles County, California (fips ==\n# \"06037\"). Which city has seen greater changes over time in motor vehicle\n# emissions?\n\nlibrary(plyr)\nlibrary(dplyr)\nlibrary(ggplot2)\n\n# Function to create the sixth plot. If argument `save` is set to TRUE, a png\n# file 'plot6.png' is created containing the plot. Otherwise the plot is just\n# shown on the screen device.\nplot6 <- function (save = FALSE) {\n    if ( !(exists(\"SCC\") && exists(\"NEI\")) ) {\n        SCC <- readRDS(\"exdata-data-NEI_data/Source_Classification_Code.rds\")\n        NEI <- readRDS(\"exdata-data-NEI_data/summarySCC_PM25.rds\")\n        \n        SCC <- as.tbl(SCC)\n        NEI <- as.tbl(NEI)\n    }\n    \n    mv_related <- SCC %>%\n        filter(grepl('Vehicle', EI.Sector))\n    \n    city_sums <- NEI %>%\n        filter(fips == \"24510\" | fips == \"06037\") %>%\n        filter(SCC %in% mv_related$SCC) %>%\n        mutate(fips = ifelse(fips == \"24510\", \"Baltimore City, MA\", \"Los Angeles County, CA\")) %>%\n        mutate(Year = factor(year)) %>%\n        group_by(fips, Year) %>%\n        summarise(Sums = sum(Emissions))\n\n    plot <- ggplot(city_sums, aes(x=Year, y=Sums, group=fips, colour=fips)) +\n         geom_line() +\n         labs(title = expression(PM[2.5] * \" emissions from MV-sources in Baltimore and LA\")) +\n         labs(x = \"Year\", y = expression(Total~emissions~of~PM[2.5]))\n\n    # PNG file creation, create a png file if argument save = TRUE\n    if (save) png(file = \"plot6.png\", bg = \"transparent\")\n    print(plot)\n    if (save) dev.off()\n}\n",
+    "created" : 1443123749378.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4074354935",
+    "id" : "D1E7249B",
+    "lastKnownWriteTime" : 1443474703,
+    "path" : "~/R/Coursera/assignments/exdata-032/ExData_Plotting2/plot6.R",
+    "project_path" : "plot6.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : true,
+    "type" : "r_source"
+}

@@ -1,0 +1,18 @@
+{
+    "contents" : "# Have total emissions from PM2.5 decreased in the United States from 1999 to\n# 2008? Using the base plotting system, make a plot showing the total PM2.5\n# emission from all sources for each of the years 1999, 2002, 2005, and 2008.\n\nlibrary(data.table)\nlibrary(dplyr)\n\n# Function to create the first plot. If argument `save` is set to TRUE, a png\n# file 'plot6.png' is created containing the plot. Otherwise the plot is just\n# shown on the screen device.\nplot1 <- function (save = FALSE) {\n    if (!exists(\"NEI\")) {\n        NEI <- readRDS(\"exdata-data-NEI_data/summarySCC_PM25.rds\")\n        NEI <- as.tbl(as.data.table(NEI, key = \"year\"))\n    }\n\n    # total_sums <- NEI[ ,Year:=factor(year) ][ ,Sums:=(sum(Emissions)/1e+06),by=Year ][, c(Year,Sums)]\n        \n    total_sums <- NEI %>%\n            mutate(Year = factor(year)) %>%\n            group_by(Year) %>%\n            summarise(Sums = (sum(Emissions) / 1e+06))\n#                   (To make the values more readable, we divide by 1 mln)\n\n    \n    # PNG file creation, create a png file if argument save = TRUE\n    if (save) png(file = \"plot1.png\", bg = \"transparent\")\n    with(total_sums, barplot(Sums,\n                         xlab = \"Year\",\n                         ylab = expression(Total~emissions~of~PM[2.5] * \" (x 1 Mln)\"),\n                         main = \"Total emissions in the US\"))\n    \n    # Put the labels on the X axis\n    axis(1, at = c(1:4), labels = c(\"1999\", \"2002\", \"2005\", \"2008\"))\n    \n    if (save) dev.off()\n}\n",
+    "created" : 1443123699802.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "647299980",
+    "id" : "39FE8749",
+    "lastKnownWriteTime" : 1443644706,
+    "path" : "~/R/Coursera/assignments/exdata-032/ExData_Plotting2/plot1.R",
+    "project_path" : "plot1.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : true,
+    "type" : "r_source"
+}

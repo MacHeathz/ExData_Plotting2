@@ -1,0 +1,18 @@
+{
+    "contents" : "# Have total emissions from PM2.5 decreased in the Baltimore City, Maryland\n# (fips == \"24510\") from 1999 to 2008? Use the base plotting system to make a\n# plot answering this question.\n\nlibrary(dplyr)\n\n# Function to create the second plot. If argument `save` is set to TRUE, a png\n# file 'plot6.png' is created containing the plot. Otherwise the plot is just\n# shown on the screen device.\nplot2 <- function (save = FALSE) {\n    if ( !(exists(\"SCC\") && exists(\"NEI\")) ) {\n        SCC <- readRDS(\"exdata-data-NEI_data/Source_Classification_Code.rds\")\n        NEI <- readRDS(\"exdata-data-NEI_data/summarySCC_PM25.rds\")\n        \n        SCC <- as.tbl(SCC)\n        NEI <- as.tbl(NEI)\n    }\n    \n    Baltimore_sums <- NEI %>%\n         filter(fips == \"24510\") %>%\n         mutate(Year = factor(year)) %>%\n         group_by(Year) %>%\n         summarise(Sums = sum(Emissions))\n\n    # PNG file creation, create a png file if argument save = TRUE\n    if (save) png(file = \"plot2.png\", bg = \"transparent\")\n    with(Baltimore_sums, plot(Year, Sums,\n                         xlab = \"Year\",\n                         ylab = expression(Total~emissions~of~PM[2.5]),\n                         main = \"Total emissions in Baltimore, MA\"))\n    if (save) dev.off()\n}\n",
+    "created" : 1443123706927.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3167053729",
+    "id" : "59A4180C",
+    "lastKnownWriteTime" : 1443387236,
+    "path" : "~/R/Coursera/assignments/exdata-032/ExData_Plotting2/plot2.R",
+    "project_path" : "plot2.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : true,
+    "type" : "r_source"
+}

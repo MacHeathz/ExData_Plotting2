@@ -1,0 +1,18 @@
+{
+    "contents" : "# Across the United States, how have emissions from coal combustion-related\n# sources changed from 1999–2008?\n\nlibrary(dplyr)\nlibrary(ggplot2)\n\n# Function to create the fourth plot. If argument `save` is set to TRUE, a png\n# file 'plot6.png' is created containing the plot. Otherwise the plot is just\n# shown on the screen device.\nplot4 <- function (save = FALSE) {\n    if ( !(exists(\"SCC\") && exists(\"NEI\")) ) {\n        SCC <- readRDS(\"exdata-data-NEI_data/Source_Classification_Code.rds\")\n        NEI <- readRDS(\"exdata-data-NEI_data/summarySCC_PM25.rds\")\n        \n        SCC <- as.tbl(SCC)\n        NEI <- as.tbl(NEI)\n    }\n    \n    coal_related <- SCC %>%\n        filter(grepl('Fuel Comb', EI.Sector)) %>%\n        filter(grepl('Coal', EI.Sector))\n        \n    coal_sums <- NEI %>%\n        filter(SCC %in% coal_related$SCC) %>%\n        mutate(Year = factor(year)) %>%\n        group_by(Year) %>%\n        summarise(Sums = sum(Emissions)) %>%\n    \n        # To make the values more human readable, let's divide by 1,000\n        mutate(Sums = Sums / 1e+03) \n        \n    plot <- ggplot(coal_sums, aes(x=Year, y=Sums, group=1)) +\n        geom_line() +\n        labs(title = expression(\"Coal combustion-related \" * PM[2.5] * \" emissions in the US\")) +\n        labs(x = \"Year\", y = expression(Total~emissions~of~PM[2.5] * \" (x 1,000)\"))\n\n    # PNG file creation, create a png file if argument save = TRUE\n    if (save) png(file = \"plot4.png\", bg = \"transparent\")\n    print(plot)\n    if (save) dev.off()\n}\n",
+    "created" : 1443123728277.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2006467233",
+    "id" : "C241CFFF",
+    "lastKnownWriteTime" : 1443389837,
+    "path" : "~/R/Coursera/assignments/exdata-032/ExData_Plotting2/plot4.R",
+    "project_path" : "plot4.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : true,
+    "type" : "r_source"
+}
